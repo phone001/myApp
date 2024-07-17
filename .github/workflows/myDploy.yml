@@ -22,20 +22,15 @@ jobs:
       #   run: |
       #     "${{ secrets.MY_KEY }}" > .env
 
-      - name: test
-        run: |
-          ls -la
-          pwd
-
       - name: npm install # 의존성 설치 npm audit fix || true 보안 취약점을 자동으로 유연하게 수정해서 실패해도 일단 빌드 진행 하면서 의존성 유연하게 설치
         run: |
           cd myApp
-          ls 
           npm install
           npm audit fix || true
 
       - name: build nestjs
         run: |
+          cd myApp
           npm run build
 
       - name: build output # ls -la dist dist폴더 안의 내용을 상세하게 출력 pwd 현재 작업 경로 출력
