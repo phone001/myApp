@@ -19,7 +19,7 @@ jobs:
       #      ssh-private-key: ${{secrets.AWS_SECRET_KEY}}
 
       - name: ssh ec2 접속
-        uses: appleboy/ssh-action@v0.1.2
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{secrets.HOST}}
           username: ${{secrets.USERNAME}}
