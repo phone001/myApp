@@ -1,8 +1,10 @@
 name: last nest deploy
+
 on:
   push:
     branches:
       - master
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,27 +15,28 @@ jobs:
 
       - name: set up node
         uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
       # - name: create .env
       #   run: |
-      #     "${{secrets.MY_KEY}}" > .env
+      #     "${{ secrets.MY_KEY }}" > .env
 
-      - name: npm install # 의존성 설치, npm audit fix || true 보안 취약점을 자동으로 유연하게 수정해서 실패해도 일단 빌드 진행하면서 의존성 유연하게 설치
+      - name: npm install # 의존성 설치 npm audit fix || true 보안 취약점을 자동으로 유연하게 수정해서 실패해도 일단 빌드 진행 하면서 의존성 유연하게 설치
         run: |
           npm install
           npm audit fix || true
 
       - name: build nestjs
         run: |
-          source .env
           npm run build
 
-      - name: build output # ls -al dist dist 폴더 안의 내용을 상세하게 출력 pwd 현재 작업 경로 출력
+      - name: build output # ls -la dist dist폴더 안의 내용을 상세하게 출력 pwd 현재 작업 경로 출력
         run: |
-          ls -al dist
+          ls -la dist
           pwd
 
-      - name: upload build artifacts # 빌드 준비단계 업로드 하기 전단계
+      - name: Upload build artifacts # 빌드 준비 단계 업로드 하기전 단계
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
@@ -42,22 +45,18 @@ jobs:
       - name: install ssh key
         run: |
           mkdir -p ~/.ssh
-          echo "${{secrets.AWS_SECRET_KEY}}" > ~/.ssh/aws_key
+          echo "${{ secrets.AWS_SECRET_KEY }}" > ~/.ssh/aws_key
           chmod 600 ~/.ssh/aws_key
-          ssh-keyscan -H ${{secrets.HOST}} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
           cat ~/.ssh/known_hosts
-
-      - name: debug artifacts
-        run: |
-          ls -al .dist
 
       - name: ec2 deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{secrets.HOST}}
-          username: ${{secrets.USERNAME}}
-          key: ${{secrets.AWS_SECRET_KEY}}
-          port: ${{secrets.PORT}}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.AWS_SECRET_KEY }}
+          port: ${{ secrets.PORT }}
           script: | # 실행할 스크립트
             cd /home/ubuntu
             rm -rf dist
@@ -65,15 +64,15 @@ jobs:
 
       - name: ec2에 아티펙트 내용 복사
         run: |
-          scp -r -i ~/.ssh/aws_key .dist/* ${{secrets.USERNAME}}@${{secrets.HOST}}:/home/ubuntu/dist/
+          scp -r -i ~/.ssh/aws_key ./dist/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/ubuntu/dist/
 
       - name: deploy to ec2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{secrets.HOST}}
-          username: ${{secrets.USERNAME}}
-          key: ${{secrets.AWS_SECRET_KEY}}
-          port: ${{secrets.PORT}}
-          script: | # 실행할 스크립트
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.AWS_SECRET_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
             cd /home/ubuntu
             pm2 reload system.config.js --env production
