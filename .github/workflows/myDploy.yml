@@ -20,6 +20,7 @@ jobs:
 
       - name: npm install # 의존성 설치, npm audit fix || true 보안 취약점을 자동으로 유연하게 수정해서 실패해도 일단 빌드 진행하면서 의존성 유연하게 설치
         run: |
+          cd /home/ubuntu/myapp/myApp
           npm install
           npm audit fix || true
 
