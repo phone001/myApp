@@ -66,6 +66,7 @@ jobs:
 
       - name: ec2에 아티펙트 내용 복사
         run: |
+          cd myApp
           scp -r -i ~/.ssh/aws_key ./dist/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/ubuntu/dist/
 
       - name: deploy to ec2
