@@ -13,10 +13,10 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4 # uses 사용할 라이브러리
 
-      - name: ssh key
-        uses: webfactory/ssh-agent@v0.5.3
-        with: # 작성할 속성을 정의
-          ssh-private-key: ${{secrets.AWS_SECRET_KEY}}
+      #  - name: ssh key
+      #    uses: webfactory/ssh-agent@v0.5.3
+      #    with: # 작성할 속성을 정의
+      #      ssh-private-key: ${{secrets.AWS_SECRET_KEY}}
 
       - name: ssh ec2 접속
         uses: appleboy/ssh-action@v0.1.2
