@@ -26,7 +26,7 @@
 > 80번포트로 요청을 보냈지만 3000포트로 재매핑해서 응답을 주는 것
 ```sh
 # 추가
-sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3000;
+sudo iptables -t nat -A PREROUTING  -p tcp --dport 80 -j REDIRECT --to-port 3000;
 
 # 확인
 sudo iptables -t nat -L --line-numbers
@@ -34,4 +34,18 @@ sudo iptables -t nat -L --line-numbers
 
 #삭제
 sudo iptables -t nat -D PREROUTING 1
+
+
+sudo apt-get install iptables-persistent
+sudo netfilter-persistent save
+sudo systemctl restart netfilter-persistent
+sudo iptables -t nat -A PREROUTING  -p tcp --dport 80 -j REDIRECT --to-port 3000;
+sudo iptables -t nat -L --line-numbers
+sudo iptables -t nat -D PREROUTING 1
+
+# pm2 설치
+npm i -g pm2
+# nodejs어플리케이션을 운영할 때 사용하는 프로세스 매니저
+# 백그라운드에서 실행을 하고 모니터링할 수 있다.
+# 백그라운드는 관리자 권한이 있어야하기 때문에 sudo를 해야한다.
 ```
