@@ -33,10 +33,10 @@ jobs:
           cd myApp
           npm run build
 
-      - name: build output # ls -la dist dist폴더 안의 내용을 상세하게 출력 pwd 현재 작업 경로 출력
-        run: |
-          ls -la dist
-          pwd
+      #- name: build output # ls -la dist dist폴더 안의 내용을 상세하게 출력 pwd 현재 작업 경로 출력
+      #  run: |
+      #    ls -la dist
+      #    pwd
 
       - name: Upload build artifacts # 빌드 준비 단계 업로드 하기전 단계
         uses: actions/upload-artifact@v4
