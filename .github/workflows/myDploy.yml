@@ -68,7 +68,7 @@ jobs:
           scp -r -i ~/.ssh/aws_key .dist/* ${{secrets.USERNAME}}@${{secrets.HOST}}:/home/ubuntu/dist/
 
       - name: deploy to ec2
-        uses: applyboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{secrets.HOST}}
           username: ${{secrets.USERNAME}}
