@@ -236,3 +236,36 @@ jobs:
 
  ```
  https://docs.github.com/ko/actions/quickstart
+
+ ## AWS ec2 에 쉴 스크립트를 실행
+ > ec2에 ssh 커넥션을 맺고 쉘 스크립트 실행
+ ```yml
+name: CI/CD 구축
+
+on: 
+    push:
+        branchs:
+            - master
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+    steps:
+        - name: checkout
+            uses: actions/checkout@4 # uses 사용할 라이브러리
+            
+        - name: ssh key
+            uses: webfactory/ssh-agent@v0.5.3
+            with: # 작성할 속성을 정의
+                ssh-private-key: ${{secrets.AWS_SECRET_KEY}}
+        
+        - name: ssh ec2 접속
+            uses: appleboy/ssh-action@v0.1.2
+            with: 
+                host: ${{secrets.HOST}}
+                username: ${{secrets.USERNAME}}
+                key: ${{secrets.AWS_SECRET_KEY}}
+                port: ${{secrets.PORT}}
+                script: | # 실행할 스크립트
+ ```
