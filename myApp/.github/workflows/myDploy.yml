@@ -1,18 +1,17 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
-jobs:
-  Explore-GitHub-Actions:
-    runs-on: ubuntu-latest
+name: CI/CD 구축
+
+# 이벤트를 구독
+ on:
+  push: # push 이벤트가 발생하면 실행
+    branches: # push가 발생한 브랜티가 뭐일 때 실행할지
+      - master
+
+jobs: # 작업의 단위
+  myTest: # 식별자 이름(우리가 이름 정해도 됨)
+    runs-on: : ubuntu-latest # 사용할 운영체제
+
+    # 작업의 가장 작은 단위
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - name: shell console test # 가장 작은 작업 단위의 이름
+        run: echo 'my ci/cd' # 작업에서 실행할 쉘 스크립트 내용
+
