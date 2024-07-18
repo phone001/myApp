@@ -67,19 +67,31 @@ jobs: # 작업의 단위
           mkdir -p ~/.ssh
           ls -al
           pwd
-          cd ~/.ssh/
-          echo "${{secrets.AWS_SECRET_KEY}}" > aws_key
-          chmod 600 aws_key
-          ssh-keyscan -H ${{secrets.HOST}} > known_hosts
+          echo "${{secrets.AWS_SECRET_KEY}}" > ~/.ssh/aws_key
+          chmod 600 ~/.ssh/aws_key
+          ssh-keyscan -H ${{secrets.HOST}} > ~/.ssh/known_hosts
           cat ~/.ssh/known_hosts
 
       # 배포 준비단계 배포하기 전에 생성할 폴더 및 파일 확인
       # script는 ec2 운영서버에서 실행시킬 쉘 스크립트내용
-      # - name: ec2 deploy
-      #   uses: appleboy/ssh-action@v1.0.3
-      #   with:
-      #     host:
-      #     username:
-      #     key:
-      #     port:
-      #     script:
+      - name: ec2 deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USERNAME}}
+          key: ${{secrets.AWS_SECRET_KEY}}
+          port: ${{secrets.PORT}}
+          script: |
+            cd /home/ubuntu
+            cd myApp
+            rm -rf dist
+            mkdir dist
+            rm -rf package.json
+            rm -rf package-lock.json
+
+      - name: EC2에 아티펙트 복사
+        run:
+          | # scp 파일을 복사하기 위한 명령 -r 폴더를 재귀적으로 복사 -i ssh 연결을 설정할 때 사용하는 키파일을 지정
+          scp -r -i ~/.ssh/aws_key myApp/dist/* ${{secrets.USERNAME}}@${{secrets.HOST}}/home/ubuntu/myApp/dist
+          scp -i ~/.ssh/aws_key packege.json ${{secrets.USERNAME}}@${{secrets.HOST}}/home/ubuntu
+          scp -i ~/.ssh/aws_key packege-lock.json ${{secrets.USERNAME}}@${{secrets.HOST}}/home/ubuntu
