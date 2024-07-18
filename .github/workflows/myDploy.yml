@@ -54,6 +54,7 @@ jobs: # 작업의 단위
             myApp/dist/
             package.json
             package-lock.json
+            system.config.js
 
       # 운영 서버에 전송 ec2에 파일 전송
       # >는 출력의 내용을 파일로 저장
@@ -87,6 +88,7 @@ jobs: # 작업의 단위
             mkdir dist
             rm -rf package.json
             rm -rf package-lock.json
+            rm -rf system.config.js
 
       - name: EC2에 아티펙트 복사
         run:
@@ -100,6 +102,7 @@ jobs: # 작업의 단위
           scp -r -i ~/.ssh/aws_key myApp/dist/* ${{secrets.USERNAME}}@${{secrets.HOST}}:/home/ubuntu/myApp/dist
           scp -i ~/.ssh/aws_key myApp/package.json ${{secrets.USERNAME}}@${{secrets.HOST}}:/home/ubuntu/myApp
           scp -i ~/.ssh/aws_key myApp/package-lock.json ${{secrets.USERNAME}}@${{secrets.HOST}}:/home/ubuntu/myApp
+          scp -i ~/.ssh/aws_key myApp/system.config.js ${{secrets.USERNAME}}@${{secrets.HOST}}:/home/ubuntu/myApp
 
       - name: EC2 npm install
         uses: appleboy/ssh-action@v1.0.3
@@ -115,7 +118,9 @@ jobs: # 작업의 단위
             npm install
 
       - name: deploy to ec2
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.0.3 # kill을 하면 서버가 중단된다.
+        ## 무중단 배포
+        ## pm2 reload 애플리케이션이 중단없이 새로운 코드의 내용을 다시 가져온다.
         with:
           host: ${{secrets.HOST}}
           username: ${{secrets.USERNAME}}
@@ -123,6 +128,6 @@ jobs: # 작업의 단위
           port: ${{secrets.PORT}}
           script: |
             cd /home/ubuntu/myApp
-            pm2 start ./dist/main.js
+            pm2 reload system.config.js
           # npm으로 실행하면 dev로 실핼하더도 한번 실행하고 끝
           # pm2로 실행하면 백그라운드로 계속 실행하기 때문에 pm2로 유지시켜줘야한다.
