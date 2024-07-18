@@ -56,10 +56,17 @@ jobs: # 작업의 단위
             package-lock.json
 
       # 운영 서버에 전송 ec2에 파일 전송
+      # >는 출력의 내용을 파일로 저장
+      # >> 파일이 있으면 기존 내용에 추가
+      # ssh_keyscan : ssh 요청을 보낼때 호스트의 키를 가져와라
+      # H 옵션 : 호스트 이름을 해시화해서 출력
       - name: ssh 접근할 키파일 생성
         run:
           | # .ssh 폴더가 있어도 에러를 발생시키지 않는다. 부모 디렉터리 생성, 부모 디렉터리 생성
           mkdir -p ~/.ssh
           ls 
           pwd
-        # echo "${{secrets.AWS_SECRET_KEY}}" >
+          echo "${{secrets.AWS_SECRET_KEY}}" > ./.ssh/aws_key
+          chmod 600 ./.ssh/aws_key
+          ssh_keyscan -H ${{secrets.HOST}} > ./.ssh/known_hosts
+          cat ./.ssh/known_hosts
