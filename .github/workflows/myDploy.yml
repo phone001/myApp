@@ -94,6 +94,9 @@ jobs: # 작업의 단위
           ls
           pwd
           ls myApp
+          ls myApp/dist
+          ls myApp/myApp
+
           scp -r -i ~/.ssh/aws_key myApp/dist/* ${{secrets.USERNAME}}@${{secrets.HOST}}/home/ubuntu/myApp/dist
           scp -i ~/.ssh/aws_key myApp/packege.json ${{secrets.USERNAME}}@${{secrets.HOST}}/home/ubuntu
           scp -i ~/.ssh/aws_key myApp/packege-lock.json ${{secrets.USERNAME}}@${{secrets.HOST}}/home/ubuntu
