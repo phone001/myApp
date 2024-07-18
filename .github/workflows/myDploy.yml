@@ -123,4 +123,6 @@ jobs: # 작업의 단위
           port: ${{secrets.PORT}}
           script: |
             cd /home/ubuntu/myApp
-            npm run start:dev
+            pm2 npm start
+          # npm으로 실행하면 dev로 실핼하더도 한번 실행하고 끝
+          # pm2로 실행하면 백그라운드로 계속 실행하기 때문에 pm2로 유지시켜줘야한다.
