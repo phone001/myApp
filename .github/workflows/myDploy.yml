@@ -43,3 +43,23 @@ jobs: # 작업의 단위
           cd myApp/dist
           ls
           pwd
+
+      # 러너에 빌드된 파일과 의존성들이 있는 상태 빌드 서버
+      # 운영 배포 서버에 전송해줘야한다
+      - name: upload build
+        uses: actions/upload-artifact@v4 # 빌드 결과물 저장 , 빌드 된 바이너리 패키지
+        with:
+          name: build-artifacts
+          path: | # path가 아티팩트에 저장할 폴더나 파일들의 경로
+            myApp/dist/
+            package.json
+            package-lock.json
+
+      # 운영 서버에 전송 ec2에 파일 전송
+      - name: ssh 접근할 키파일 생성
+        run:
+          | # .ssh 폴더가 있어도 에러를 발생시키지 않는다. 부모 디렉터리 생성, 부모 디렉터리 생성
+          mkdir -p ~/.ssh
+          ls 
+          pwd
+        # echo "${{secrets.AWS_SECRET_KEY}}" >
