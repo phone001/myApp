@@ -64,9 +64,9 @@ jobs: # 작업의 단위
         run:
           | # .ssh 폴더가 있어도 에러를 발생시키지 않는다. 부모 디렉터리 생성, 부모 디렉터리 생성
           mkdir -p ~/.ssh
-          ls 
+          ls -al
           pwd
-          echo "${{secrets.AWS_SECRET_KEY}}" > ./.ssh/aws_key
+          echo "${{secrets.AWS_SECRET_KEY}}" > .ssh/aws_key
           chmod 600 ./.ssh/aws_key
-          ssh_keyscan -H ${{secrets.HOST}} > ./.ssh/known_hosts
+          ssh_keyscan -H ${{secrets.HOST}} > .ssh/known_hosts
           cat ./.ssh/known_hosts
