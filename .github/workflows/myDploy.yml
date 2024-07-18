@@ -113,3 +113,14 @@ jobs: # 작업의 단위
             ls
             pwd
             npm install
+
+      - name: deploy to ec2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USERNAME}}
+          key: ${{secrets.AWS_SECRET_KEY}}
+          port: ${{secrets.PORT}}
+          script: |
+            cd /home/ubuntu/myApp
+            npm run start:dev
