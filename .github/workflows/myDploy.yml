@@ -40,6 +40,6 @@ jobs: # 작업의 단위
         run: |
           ls
           pwd
-          cd dist
+          cd myApp/dist
           ls
           pwd
