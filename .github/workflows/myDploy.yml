@@ -1,81 +1,25 @@
-name: last nest deploy
+name: last nset build # 현재 제목
 
-on:
-  push:
-    branches:
+on: # 이벤트를 등록
+  push: # push 이벤트가 발생하면
+    branches: # branches 어떤 브랜치에 이벤트가 일어났을 대 작업을 동작
       - master
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+jobs: # 작업의 단위
+  kimBuild: # 식별자
+    runs-on: ubuntu-latest # 러너에서 사용할 os latest 최신 버전 사용하겠다.
 
-    steps:
-      - name: checkout
-        uses: actions/checkout@v4
+    steps: # 작업의 가장 작은 단위
+      - name: checkout # 작업의 작은 단위의 이름
+        uses: actions/checkout@v4 # 레파지토리 체크아웃 할 수 있게 도와주는 라이브러리
+        # 브랜치에 있는 내용을 클론해온다. 워크 플로우에
 
-      - name: set up node
-        uses: actions/setup-node@v4
+      - name: set up node # uses 라이브러리를 사용할 것을 가져오고 with는 라이브러리의 속성설정
+        uses: actions/setup-node@v4 # 노드버전을 가져오고
         with:
-          node-version: "20"
+          node-version: "20" # 20 버전의 노드 런타임 환경을 제공
 
-      # - name: create .env
-      #   run: |
-      #     "${{ secrets.MY_KEY }}" > .env
-
-      - name: npm install # 의존성 설치 npm audit fix || true 보안 취약점을 자동으로 유연하게 수정해서 실패해도 일단 빌드 진행 하면서 의존성 유연하게 설치
+      - name: test # 의존성 설치하기 전에 폴더 구조 확인
         run: |
-          cd myApp
-          npm install
-          npm audit fix || true
-
-      - name: build nestjs
-        run: |
-          cd myApp
-          npm run build
-
-      #- name: build output # ls -la dist dist폴더 안의 내용을 상세하게 출력 pwd 현재 작업 경로 출력
-      #  run: |
-      #    ls -la dist
-      #    pwd
-
-      - name: Upload build artifacts # 빌드 준비 단계 업로드 하기전 단계
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: dist/
-
-      - name: install ssh key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.AWS_SECRET_KEY }}" > ~/.ssh/aws_key
-          chmod 600 ~/.ssh/aws_key
-          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
-          cat ~/.ssh/known_hosts
-
-      - name: ec2 deploy
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.AWS_SECRET_KEY }}
-          port: ${{ secrets.PORT }}
-          script: | # 실행할 스크립트
-            cd /home/ubuntu
-            rm -rf dist
-            mkdir dist
-
-      - name: ec2에 아티펙트 내용 복사
-        run: |
-          cd myApp
-          scp -r -i ~/.ssh/aws_key ./dist/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/ubuntu/dist/
-
-      - name: deploy to ec2
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.AWS_SECRET_KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            cd /home/ubuntu
-            pm2 reload system.config.js --env production
+          ls 
+          pwd
