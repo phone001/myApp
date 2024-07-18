@@ -91,6 +91,7 @@ jobs: # 작업의 단위
       - name: EC2에 아티펙트 복사
         run:
           | # scp 파일을 복사하기 위한 명령 -r 폴더를 재귀적으로 복사 -i ssh 연결을 설정할 때 사용하는 키파일을 지정
+          cd myApp
           ls
           pwd
           scp -r -i ~/.ssh/aws_key myApp/dist/* ${{secrets.USERNAME}}@${{secrets.HOST}}/home/ubuntu/myApp/dist
