@@ -19,7 +19,27 @@ jobs: # 작업의 단위
         with:
           node-version: "20" # 20 버전의 노드 런타임 환경을 제공
 
+      # 가상머신의 경로는 /home/runner
+      # runner는 가상머신의 이름으로 os는 똑같고 그 안에 work 디렉터리 위에서 동작한다.
       - name: test # 의존성 설치하기 전에 폴더 구조 확인
         run: |
           ls 
+          pwd
+
+      - name: npm install
+        run: |
+          cd myApp
+          npm install
+
+      - name: build nest
+        run: |
+          cd myApp
+          npm run build
+
+      - name: build test
+        run: |
+          ls
+          pwd
+          cd dist
+          ls
           pwd
