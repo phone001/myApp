@@ -60,13 +60,27 @@ jobs: # 작업의 단위
       # >> 파일이 있으면 기존 내용에 추가
       # ssh_keyscan : ssh 요청을 보낼때 호스트의 키를 가져와라
       # H 옵션 : 호스트 이름을 해시화해서 출력
+      # run : 러너 가상 머신에서 실행될 쉘 스크립트
       - name: ssh 접근할 키파일 생성
         run:
           | # .ssh 폴더가 있어도 에러를 발생시키지 않는다. 부모 디렉터리 생성, 부모 디렉터리 생성
           mkdir -p ~/.ssh
           ls -al
           pwd
+          cd ~/
+          ls -al
           echo "${{secrets.AWS_SECRET_KEY}}" > ~/.ssh/aws_key
           chmod 600 ./.ssh/aws_key
           ssh_keyscan -H ${{secrets.HOST}} > ~/.ssh/known_hosts
           cat ~/.ssh/known_hosts
+
+      # 배포 준비단계 배포하기 전에 생성할 폴더 및 파일 확인
+      # script는 ec2 운영서버에서 실행시킬 쉘 스크립트내용
+      # - name: ec2 deploy
+      #   uses: appleboy/ssh-action@v1.0.3
+      #   with:
+      #     host:
+      #     username:
+      #     key:
+      #     port:
+      #     script:
