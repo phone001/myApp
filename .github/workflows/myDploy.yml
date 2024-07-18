@@ -82,7 +82,7 @@ jobs: # 작업의 단위
           key: ${{secrets.AWS_SECRET_KEY}}
           port: ${{secrets.PORT}}
           script: |
-            cd /home/ubuntu/myApp
+            cd /home/ubuntu/myApp/myApp
             rm -rf dist
             mkdir dist
             rm -rf package.json
@@ -97,7 +97,15 @@ jobs: # 작업의 단위
           echo "===="
           ls myApp/dist
           echo "===="
+          scp -r -i ~/.ssh/aws_key myApp/dist/* ${{secrets.USERNAME}}@${{secrets.HOST}}:/home/ubuntu/myApp/dist
+          scp -i ~/.ssh/aws_key myApp/packege.json ${{secrets.USERNAME}}@${{secrets.HOST}}:/home/ubuntu
+          scp -i ~/.ssh/aws_key myApp/packege-lock.json ${{secrets.USERNAME}}@${{secrets.HOST}}:/home/ubuntu
 
-          scp -r -i ~/.ssh/aws_key myApp/dist/* ${{secrets.USERNAME}}@${{secrets.HOST}}/home/ubuntu/myApp/dist
-          scp -i ~/.ssh/aws_key myApp/packege.json ${{secrets.USERNAME}}@${{secrets.HOST}}/home/ubuntu
-          scp -i ~/.ssh/aws_key myApp/packege-lock.json ${{secrets.USERNAME}}@${{secrets.HOST}}/home/ubuntu
+      # - name: EC2 npm install
+      #   uses: appleboy/ssh-action@v1.0.3
+      #   with:
+      #     host: ${{secrets.HOST}}
+      #     username: ${{secrets.USERNAME}}
+      #     key: ${{secrets.AWS_SECRET_KEY}}
+      #     port: ${{secrets.PORT}}
+      #     script:
